@@ -4,7 +4,6 @@
 # license information.
 # --------------------------------------------------------------------------
 import functools
-import time
 import unittest
 import sys
 from unittest.mock import Mock
@@ -63,8 +62,9 @@ try:
                 await appconfig_client.set_configuration_setting(setting)
                 await appconfig_client.set_configuration_setting(feature_flag)
 
-                # Waiting for the refresh interval to pass
-                time.sleep(2)
+                # Expire the refresh timers to simulate time passing
+                client._refresh_timer._next_refresh_time = 0
+                client._feature_flag_refresh_timer._next_refresh_time = 0
 
                 await client.refresh()
                 assert client["refresh_message"] == "updated value"
@@ -76,8 +76,9 @@ try:
                 await appconfig_client.set_configuration_setting(setting)
                 await appconfig_client.set_configuration_setting(feature_flag)
 
-                # Waiting for the refresh interval to pass
-                time.sleep(2)
+                # Expire the refresh timers to simulate time passing
+                client._refresh_timer._next_refresh_time = 0
+                client._feature_flag_refresh_timer._next_refresh_time = 0
 
                 await client.refresh()
                 assert client["refresh_message"] == "original value"
@@ -133,8 +134,9 @@ try:
                 setting.value = "updated value"
                 await appconfig_client.set_configuration_setting(setting)
 
-                # Waiting for the refresh interval to pass
-                time.sleep(2)
+                # Expire the refresh timers to simulate time passing
+                client._refresh_timer._next_refresh_time = 0
+                client._feature_flag_refresh_timer._next_refresh_time = 0
 
                 await client.refresh()
                 # No Change the Watch Key wasn't updated
@@ -145,8 +147,9 @@ try:
                 watch_key.value = "1"
                 await appconfig_client.set_configuration_setting(watch_key)
 
-                # Waiting for the refresh interval to pass
-                time.sleep(2)
+                # Expire the refresh timers to simulate time passing
+                client._refresh_timer._next_refresh_time = 0
+                client._feature_flag_refresh_timer._next_refresh_time = 0
 
                 await client.refresh()
                 assert client["refresh_message"] == "updated value"
@@ -181,8 +184,8 @@ try:
                 static_setting.value = "updated static"
                 await appconfig_client.set_configuration_setting(static_setting)
 
-                # Waiting for the refresh interval to pass
-                time.sleep(2)
+                # Expire the refresh timers to simulate time passing
+                client._refresh_timer._next_refresh_time = 0
 
                 await client.refresh()
                 assert client["refresh_message"] == "original value"

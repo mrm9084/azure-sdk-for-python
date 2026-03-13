@@ -4,7 +4,6 @@
 # license information.
 # --------------------------------------------------------------------------
 import functools
-import time
 import unittest
 from unittest.mock import Mock
 from devtools_testutils import EnvironmentVariableLoader, recorded_by_proxy
@@ -53,8 +52,9 @@ class TestAppConfigurationProvider(AppConfigTestCase, unittest.TestCase):
         appconfig_client.set_configuration_setting(setting)
         appconfig_client.set_configuration_setting(feature_flag)
 
-        # Waiting for the refresh interval to pass
-        time.sleep(2)
+        # Expire the refresh timers to simulate time passing
+        client._refresh_timer._next_refresh_time = 0
+        client._feature_flag_refresh_timer._next_refresh_time = 0
 
         client.refresh()
         assert client["refresh_message"] == "updated value"
@@ -66,8 +66,9 @@ class TestAppConfigurationProvider(AppConfigTestCase, unittest.TestCase):
         appconfig_client.set_configuration_setting(setting)
         appconfig_client.set_configuration_setting(feature_flag)
 
-        # Waiting for the refresh interval to pass
-        time.sleep(2)
+        # Expire the refresh timers to simulate time passing
+        client._refresh_timer._next_refresh_time = 0
+        client._feature_flag_refresh_timer._next_refresh_time = 0
 
         client.refresh()
         assert client["refresh_message"] == "original value"
@@ -120,8 +121,9 @@ class TestAppConfigurationProvider(AppConfigTestCase, unittest.TestCase):
         setting.value = "updated value"
         appconfig_client.set_configuration_setting(setting)
 
-        # Waiting for the refresh interval to pass
-        time.sleep(2)
+        # Expire the refresh timers to simulate time passing
+        client._refresh_timer._next_refresh_time = 0
+        client._feature_flag_refresh_timer._next_refresh_time = 0
 
         client.refresh()
         # No Change the Watch Key wasn't updated
@@ -132,8 +134,9 @@ class TestAppConfigurationProvider(AppConfigTestCase, unittest.TestCase):
         watch_key.value = "1"
         appconfig_client.set_configuration_setting(watch_key)
 
-        # Waiting for the refresh interval to pass
-        time.sleep(2)
+        # Expire the refresh timers to simulate time passing
+        client._refresh_timer._next_refresh_time = 0
+        client._feature_flag_refresh_timer._next_refresh_time = 0
 
         client.refresh()
         assert client["refresh_message"] == "updated value"
@@ -166,8 +169,8 @@ class TestAppConfigurationProvider(AppConfigTestCase, unittest.TestCase):
         static_setting.value = "updated static"
         appconfig_client.set_configuration_setting(static_setting)
 
-        # Waiting for the refresh interval to pass
-        time.sleep(2)
+        # Expire the refresh timers to simulate time passing
+        client._refresh_timer._next_refresh_time = 0
 
         client.refresh()
         assert client["refresh_message"] == "original value"

@@ -252,8 +252,8 @@ class TestSnapshotProviderIntegration(AppConfigTestCase):
                 new_key = ConfigurationSetting(key="new_key_added_after_load", value="new_value", label=NULL_CHAR)
                 await set_test_settings_async(sdk_client, modified_settings + [new_key])
 
-                # Wait for refresh interval to pass
-                time.sleep(1)
+                # Expire the refresh timer so refresh will check for changes
+                provider._refresh_timer._next_refresh_time = 0
 
                 # Refresh the existing provider (snapshots should remain immutable, but non-snapshot keys should update)
                 await provider.refresh()
