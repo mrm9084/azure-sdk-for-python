@@ -16,10 +16,13 @@ from testcase import setup_configs
 
 # autouse=True will trigger this fixture on each pytest run, even if it's not explicitly used by a test method
 
+# Module-level storage for snapshot names created during session setup
+snapshot_names = {}
+
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_app_config_keys():
-    """Pre-populate App Configuration with test keys once per session (live mode only)."""
+    """Pre-populate App Configuration with test keys and snapshots once per session (live mode only)."""
     if not is_live():
         yield
         return
@@ -33,7 +36,11 @@ def setup_app_config_keys():
     client = AzureAppConfigurationClient(endpoint, credential)
     keyvault_secret_url = os.environ.get("APPCONFIGURATION_KEY_VAULT_REFERENCE")
     keyvault_secret_url2 = os.environ.get("APPCONFIGURATION_KEY_VAULT_REFERENCE2")
-    setup_configs(client, keyvault_secret_url, keyvault_secret_url2)
+    snap_name, ff_snap_name = setup_configs(client, keyvault_secret_url, keyvault_secret_url2)
+
+    snapshot_names["snapshot"] = snap_name
+    snapshot_names["ff_snapshot"] = ff_snap_name
+
     yield
 
 
