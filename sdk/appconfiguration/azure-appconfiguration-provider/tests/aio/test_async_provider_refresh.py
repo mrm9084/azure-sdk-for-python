@@ -162,6 +162,7 @@ try:
                 setting.value = "original value"
                 await appconfig_client.set_configuration_setting(setting)
                 await appconfig_client.delete_configuration_setting(key="watch key")
+
         @AppConfigProviderPreparer()
         @recorded_by_proxy_async
         @pytest.mark.skipif(sys.version_info < (3, 8), reason="Python 3.7 does not support AsyncMock")

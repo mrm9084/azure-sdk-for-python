@@ -76,9 +76,7 @@ def setup_configs(client, keyvault_secret_url, keyvault_secret_url2):
     snapshot_name = f"test-snapshot-{int(time.time())}"
     ff_snapshot_name = f"test-ff-snapshot-{int(time.time())}"
 
-    create_snapshot(
-        client, snapshot_name, key_filters=["snapshot_test_*", ".appconfig.featureflag/SnapshotFeature*"]
-    )
+    create_snapshot(client, snapshot_name, key_filters=["snapshot_test_*", ".appconfig.featureflag/SnapshotFeature*"])
     create_snapshot(
         client, ff_snapshot_name, key_filters=["ff_snapshot_test_*", ".appconfig.featureflag/SnapshotOnlyFeature"]
     )

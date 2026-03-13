@@ -282,15 +282,11 @@ class TestSnapshotProviderIntegration(AppConfigTestCase):
             feature_flag_ids = {ff["id"]: ff["enabled"] for ff in feature_flags}
 
             # Regular feature flags should be loaded
-            assert (
-                "RegularFeature" not in feature_flag_ids
-            ), "RegularFeature should not be loaded via regular selector"
+            assert "RegularFeature" not in feature_flag_ids, "RegularFeature should not be loaded via regular selector"
             assert "RegularFeatureDisabled" not in feature_flag_ids, "RegularFeatureDisabled should not be loaded"
 
             # Snapshot-only feature flag should be loaded as a feature flag
-            assert (
-                "SnapshotOnlyFeature" in feature_flag_ids
-            ), "SnapshotOnlyFeature should be loaded as FF from snapshot"
+            assert "SnapshotOnlyFeature" in feature_flag_ids, "SnapshotOnlyFeature should be loaded as FF from snapshot"
 
             # Verify exactly 1 feature flag is loaded (the snapshot-only one)
             assert len(feature_flags) == 1, f"Expected 1 feature flag, got {len(feature_flags)}"

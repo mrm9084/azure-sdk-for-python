@@ -149,6 +149,7 @@ class TestAppConfigurationProvider(AppConfigTestCase, unittest.TestCase):
         setting.value = "original value"
         appconfig_client.set_configuration_setting(setting)
         appconfig_client.delete_configuration_setting(key="watch key")
+
     @AppConfigProviderPreparer()
     @recorded_by_proxy
     def test_empty_refresh(self, appconfiguration_endpoint_string, appconfiguration_keyvault_secret_url):
