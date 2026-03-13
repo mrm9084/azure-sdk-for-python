@@ -4,9 +4,9 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # --------------------------------------------------------------------------
+import time
 from devtools_testutils import AzureRecordedTestCase, is_live
 from test_constants import FEATURE_MANAGEMENT_KEY, FEATURE_FLAG_KEY
-import time
 from azure.appconfiguration import (
     AzureAppConfigurationClient,
     ConfigurationSetting,

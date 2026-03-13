@@ -9,6 +9,7 @@ from asynctestcase import (
     AppConfigTestCase,
     set_test_settings_async,
 )
+import conftest
 from devtools_testutils import EnvironmentVariableLoader
 from devtools_testutils.aio import recorded_by_proxy_async
 from test_constants import APPCONFIGURATION_ENDPOINT_STRING
@@ -19,7 +20,6 @@ from azure.appconfiguration import (
     ConfigurationSetting,
     FeatureFlagConfigurationSetting,
 )
-import conftest
 
 AppConfigProviderPreparer = functools.partial(
     EnvironmentVariableLoader,
@@ -150,7 +150,7 @@ class TestSnapshotProviderIntegration(AppConfigTestCase):
     @pytest.mark.live_test_only  # Needed to fix an azure core dependency compatibility issue
     @AppConfigProviderPreparer()
     @recorded_by_proxy_async
-    async def test_create_snapshot_and_load_provider(self, appconfiguration_endpoint_string, **kwargs):
+    async def test_create_snapshot_and_load_provider(self, appconfiguration_endpoint_string):
         """Test loading provider from a pre-created snapshot."""
         snapshot_name = conftest.snapshot_names["snapshot"]
 
@@ -256,7 +256,7 @@ class TestSnapshotProviderIntegration(AppConfigTestCase):
     @AppConfigProviderPreparer()
     @recorded_by_proxy_async
     async def test_create_snapshot_and_load_provider_with_feature_flags(
-        self, appconfiguration_endpoint_string, **kwargs
+        self, appconfiguration_endpoint_string
     ):
         """Test loading provider with feature flags from a pre-created snapshot."""
         snapshot_name = conftest.snapshot_names["ff_snapshot"]
