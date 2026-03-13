@@ -97,7 +97,9 @@ try:
                 assert mock_callback.call_count == 2
 
                 setting.value = "original value"
+                feature_flag.enabled = False
                 await appconfig_client.set_configuration_setting(setting)
+                await appconfig_client.set_configuration_setting(feature_flag)
 
                 await client.refresh()
                 assert client["refresh_message"] == "original value"
@@ -156,7 +158,10 @@ try:
                 assert has_feature_flag(client, "Alpha", False)
                 assert mock_callback.call_count == 1
 
-        # method: refresh
+                # Reset modified settings
+                setting.value = "original value"
+                await appconfig_client.set_configuration_setting(setting)
+                await appconfig_client.delete_configuration_setting(key="watch key")
         @AppConfigProviderPreparer()
         @recorded_by_proxy_async
         @pytest.mark.skipif(sys.version_info < (3, 8), reason="Python 3.7 does not support AsyncMock")

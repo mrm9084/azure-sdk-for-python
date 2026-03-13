@@ -7,10 +7,34 @@ from devtools_testutils import (
     remove_batch_sanitizers,
     add_remove_header_sanitizer,
     add_uri_string_sanitizer,
+    is_live,
 )
 import pytest
+from azure.appconfiguration import AzureAppConfigurationClient
+from azure.identity import DefaultAzureCredential
+from testcase import setup_configs
 
 # autouse=True will trigger this fixture on each pytest run, even if it's not explicitly used by a test method
+
+
+@pytest.fixture(scope="session", autouse=True)
+def setup_app_config_keys():
+    """Pre-populate App Configuration with test keys once per session (live mode only)."""
+    if not is_live():
+        yield
+        return
+
+    endpoint = os.environ.get("APPCONFIGURATION_ENDPOINT_STRING")
+    if not endpoint:
+        yield
+        return
+
+    credential = DefaultAzureCredential()
+    client = AzureAppConfigurationClient(endpoint, credential)
+    keyvault_secret_url = os.environ.get("APPCONFIGURATION_KEY_VAULT_REFERENCE")
+    keyvault_secret_url2 = os.environ.get("APPCONFIGURATION_KEY_VAULT_REFERENCE2")
+    setup_configs(client, keyvault_secret_url, keyvault_secret_url2)
+    yield
 
 
 @pytest.fixture(scope="session", autouse=True)

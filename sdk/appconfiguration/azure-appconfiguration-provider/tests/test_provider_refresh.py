@@ -87,7 +87,9 @@ class TestAppConfigurationProvider(AppConfigTestCase, unittest.TestCase):
         assert mock_callback.call_count == 2
 
         setting.value = "original value"
+        feature_flag.enabled = False
         appconfig_client.set_configuration_setting(setting)
+        appconfig_client.set_configuration_setting(feature_flag)
 
         client.refresh()
         assert client["refresh_message"] == "original value"
@@ -143,7 +145,10 @@ class TestAppConfigurationProvider(AppConfigTestCase, unittest.TestCase):
         assert has_feature_flag(client, "Alpha", False)
         assert mock_callback.call_count == 1
 
-    # method: refresh
+        # Reset modified settings
+        setting.value = "original value"
+        appconfig_client.set_configuration_setting(setting)
+        appconfig_client.delete_configuration_setting(key="watch key")
     @AppConfigProviderPreparer()
     @recorded_by_proxy
     def test_empty_refresh(self, appconfiguration_endpoint_string, appconfiguration_keyvault_secret_url):
